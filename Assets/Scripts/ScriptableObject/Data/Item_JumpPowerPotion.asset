@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8c5668f2289184aa8602bc8f931a20, type: 3}
   m_Name: Item_JumpPowerPotion
   m_EditorClassIdentifier: 
-  displayName: SpeedPotion
+  displayName: JumpPowerPotion
   description: "\uC0AC\uC6A9\uC2DC \uC810\uD504 \uD6A8\uACFC\uAC00 \uC77C\uC2DC\uC801\uC73C\uB85C
     \uAC15\uD654\uB429\uB2C8\uB2E4."
   type: 1
