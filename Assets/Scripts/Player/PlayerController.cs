@@ -6,14 +6,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    public float moveSpeed;
+    [Header("Movement")] public float moveSpeed;
     private Vector2 _curMoveInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
 
-    [Header("Look")]
-    public Transform cameraContainer;
+    [Header("Look")] public Transform cameraContainer;
     public float minXLook;
     public float maxXLook;
     private float camCurXRot;
@@ -22,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public bool canLook = true;
 
     public Action inventory;
+    public Action<string> itemQuckSlot;
     private Rigidbody _rigidbody;
 
     private void Awake()
@@ -52,9 +51,9 @@ public class PlayerController : MonoBehaviour
         Vector3 dir = transform.forward * _curMoveInput.y + transform.right * _curMoveInput.x;
         dir *= moveSpeed;
         dir.y = _rigidbody.velocity.y;
-        
+
         _rigidbody.velocity = dir;
-        
+
     }
 
     void CameraLook()
@@ -62,10 +61,10 @@ public class PlayerController : MonoBehaviour
         camCurXRot += mouseDelta.y * lookSensitivity;
         camCurXRot = Mathf.Clamp(camCurXRot, minXLook, maxXLook);
         cameraContainer.localEulerAngles = new Vector3(-camCurXRot, 0, 0);
-        
+
         transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
     }
-    
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
@@ -101,6 +100,19 @@ public class PlayerController : MonoBehaviour
             ToggleCursur();
         }
     }
+
+    public void SuperJump(float jumpPadPower)
+    {
+        _rigidbody.AddForce(Vector2.up * jumpPadPower, ForceMode.Impulse);
+    }
+    
+    public void OnItemUse(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            itemQuckSlot?.Invoke(context.control.name);
+        }
+    }
     
     void ToggleCursur()
     {
@@ -108,24 +120,56 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
     }
+
     bool IsGrounded()
     {
         Ray[] rays = new Ray[4]
         {
-            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
-            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * 0.01f), Vector3.down),
-            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
-            new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * 0.01f), Vector3.down),
+            new Ray(transform.position + (transform.forward * 0.2f) + (transform.up * -0.9f), Vector3.down),
+            new Ray(transform.position + (-transform.forward * 0.2f) + (transform.up * -0.9f), Vector3.down),
+            new Ray(transform.position + (transform.right * 0.2f) + (transform.up * -0.9f), Vector3.down),
+            new Ray(transform.position + (-transform.right * 0.2f) + (transform.up * -0.9f), Vector3.down),
         };
+
         for (int i = 0; i < rays.Length; ++i)
         {
-            if (Physics.Raycast(rays[i], 1f, groundLayerMask))
+            Debug.DrawRay(rays[i].origin, rays[i].direction * 0.1f, Color.red);
+            if (Physics.Raycast(rays[i], 0.3f, groundLayerMask))
             {
                 return true;
             }
         }
+
         return false;
     }
 
+    public void ActiveBoost(ConsumableType type, float value)
+    {
+        StartCoroutine(CoroutineActiveBoost(type, value));
+    }
 
+    private IEnumerator CoroutineActiveBoost(ConsumableType type, float value)
+    {
+        if (type == ConsumableType.Speed)
+        {
+            moveSpeed += value;
+        }
+        else if (type == ConsumableType.Jump)
+        {
+            jumpPower += value;
+        }
+        
+        yield return new WaitForSeconds(5.0f);
+        
+        if (type == ConsumableType.Speed)
+        {
+            moveSpeed -= value;
+        }
+        else if (type == ConsumableType.Jump)
+        {
+            jumpPower -= value;
+        }
+    }
+    
+    
 }

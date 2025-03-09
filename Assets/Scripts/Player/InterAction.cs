@@ -13,6 +13,7 @@ public class InterAction : MonoBehaviour
     public LayerMask layerMask;
     
     public GameObject curInteractGameObject;
+    private IInteractable _curInteractable;
     
     public TextMeshProUGUI promptText;
     private Camera _camera;
@@ -36,12 +37,14 @@ public class InterAction : MonoBehaviour
                 if (hit.collider.gameObject != curInteractGameObject)
                 {
                     curInteractGameObject = hit.collider.gameObject;
+                    _curInteractable = hit.collider.GetComponent<IInteractable>();
                     SetPromptText();
                 }
             }
             else
             {
                 curInteractGameObject = null;
+                _curInteractable = null;
                 promptText.gameObject.SetActive(false);
             }
         }
@@ -50,13 +53,17 @@ public class InterAction : MonoBehaviour
     private void SetPromptText()
     {
         promptText.gameObject.SetActive(true);
+        promptText.text = _curInteractable.GetInterfacePrompt();
     }
 
     public void OnInteractInput(InputAction.CallbackContext context)
     {
+        Debug.Log("F 사용");
         if (context.phase == InputActionPhase.Started)
         {
+            _curInteractable.OnInteract();
             curInteractGameObject = null;
+            _curInteractable = null;
             promptText.gameObject.SetActive(false);
         }
     }

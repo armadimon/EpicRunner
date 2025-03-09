@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb8c5668f2289184aa8602bc8f931a20, type: 3}
+  m_Name: Item_SpeedPotion
+  m_EditorClassIdentifier: 
+  displayName: SpeedPotion
+  description: "\uC0AC\uC6A9\uC2DC \uC18D\uB3C4\uAC00 \uC7A0\uC2DC \uBE68\uB77C\uC9D1\uB2C8\uB2E4."
+  type: 1
+  icon: {fileID: 21300000, guid: b0fa70abd2a79904cb00b175dfd8ec7e, type: 3}
+  dropPrefab: {fileID: 7772211615660823218, guid: 909bf0bce736162469da1651e65b5780, type: 3}
+  canStack: 0
+  maxStackAmount: 0
+  consumables:
+  - type: 2
+    value: 5
+  equipPrefab: {fileID: 0}
