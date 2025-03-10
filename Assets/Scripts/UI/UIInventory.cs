@@ -161,6 +161,9 @@ public class UIInventory : MonoBehaviour
         {
             SelectItem(1);
         }
+
+        if (_selectedItem == null)
+            return ;
         UseItem();
     }
     
@@ -203,7 +206,6 @@ public class UIInventory : MonoBehaviour
             slots[_selectedItemIndex].item = null;
             _selectedItemIndex = -1;
         }
-        
         UpdateUI();
     }
 
