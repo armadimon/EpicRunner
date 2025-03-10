@@ -9,7 +9,12 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")] public float moveSpeed;
     private Vector2 _curMoveInput;
     public float jumpPower;
+    public float dashPower;
+    public float dashCooldown;
     public LayerMask groundLayerMask;
+    private bool isDashing = false;
+    private float dashDuration = 0.2f;
+
 
     [Header("Look")] public Transform cameraContainer;
     public float minXLook;
@@ -35,8 +40,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Move();
+        if (!isDashing)
+        {
+            Move();
+        }
     }
+
 
     private void LateUpdate()
     {
@@ -70,7 +79,6 @@ public class PlayerController : MonoBehaviour
         if (context.phase == InputActionPhase.Performed)
         {
             _curMoveInput = context.ReadValue<Vector2>();
-            Debug.Log("_curMoveInput " + _curMoveInput);
         }
         else if (context.phase == InputActionPhase.Canceled)
         {
@@ -121,6 +129,25 @@ public class PlayerController : MonoBehaviour
         canLook = !toggle;
     }
 
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started && CharacterManager.Instance.Player.condition.UseStamina(50))
+        {
+            Vector3 dir = transform.forward * _curMoveInput.y + transform.right * _curMoveInput.x;
+            _rigidbody.AddForce(dir * dashPower, ForceMode.Impulse);
+
+            StartCoroutine(Dash());
+        }
+    }
+    
+    private IEnumerator Dash()
+    {
+        isDashing = true;
+        yield return new WaitForSeconds(dashDuration);
+        isDashing = false;
+    }
+    
     bool IsGrounded()
     {
         Ray[] rays = new Ray[4]
@@ -171,5 +198,13 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    
+    public void KnockBack(float knockbackForce, Vector3 knockbackDirection)
+    {       
+        if (_rigidbody != null)
+        {
+            knockbackDirection.y = 0.5f;
+            _rigidbody.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
+        }
+    }
 }
+
