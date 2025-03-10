@@ -4974,6 +4974,11 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!4 &988001484 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3209303962165480708, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
+  m_PrefabInstance: {fileID: 6240126409909711078}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1001258385
 GameObject:
   m_ObjectHideFlags: 0
@@ -5585,6 +5590,7 @@ Transform:
   - {fileID: 278816411}
   - {fileID: 351914608}
   - {fileID: 1001258386}
+  - {fileID: 988001484}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1446696532
@@ -10167,8 +10173,12 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1426592264}
     m_Modifications:
+    - target: {fileID: 376809333738434260, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
+      propertyPath: isLeft
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 376809333738434260, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
       propertyPath: spikeTraps.Array.data[0]
       value: 
@@ -10199,15 +10209,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3209303962165480708, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3209303962165480708, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3209303962165480708, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3209303962165480708, guid: 3a7ae82f864a74442a1e3d50636a15fa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -11294,4 +11304,3 @@ SceneRoots:
   - {fileID: 1885483802}
   - {fileID: 952593023292619229}
   - {fileID: 1426592264}
-  - {fileID: 6240126409909711078}
