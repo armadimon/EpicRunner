@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IInteractable
 {
     public string GetInterfacePrompt();
+    public void DeactivatePrompt();
     public void OnInteract();
 
 }
@@ -12,10 +13,15 @@ public class ItemObject : MonoBehaviour, IInteractable
 {
     public ItemData data;
 
-    public string GetInterfacePrompt()
+    public virtual string GetInterfacePrompt()
     {
         string str = $"[ {data.displayName} ]\n{data.description}";
         return str;
+    }
+
+    public void DeactivatePrompt()
+    {
+
     }
 
     public void OnInteract()

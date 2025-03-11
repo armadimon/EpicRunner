@@ -18,7 +18,6 @@ public class InterAction : MonoBehaviour
     public TextMeshProUGUI promptText;
     private Camera _camera;
 
-
     private void Start()
     {
         _camera = Camera.main;
@@ -43,6 +42,8 @@ public class InterAction : MonoBehaviour
             }
             else
             {
+                if (_curInteractable != null)
+                    _curInteractable.DeactivatePrompt();
                 curInteractGameObject = null;
                 _curInteractable = null;
                 promptText.gameObject.SetActive(false);
@@ -52,14 +53,20 @@ public class InterAction : MonoBehaviour
     
     private void SetPromptText()
     {
-        promptText.gameObject.SetActive(true);
-        promptText.text = _curInteractable.GetInterfacePrompt();
+        if (_curInteractable is ItemObject)
+        {
+            promptText.gameObject.SetActive(true);
+            promptText.text = _curInteractable.GetInterfacePrompt();
+        }
+        else
+        {
+            _curInteractable.GetInterfacePrompt();
+        }
     }
 
     public void OnInteractInput(InputAction.CallbackContext context)
     {
-        Debug.Log("F 사용");
-        if (context.phase == InputActionPhase.Started)
+        if (context.phase == InputActionPhase.Started && _curInteractable != null)
         {
             _curInteractable.OnInteract();
             curInteractGameObject = null;

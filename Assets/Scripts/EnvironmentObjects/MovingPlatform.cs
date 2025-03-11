@@ -25,7 +25,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            other.transform.SetParent(transform); // 플레이어를 플랫폼의 자식으로 설정
+            other.transform.SetParent(transform);
         }
     }
 
@@ -33,7 +33,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            other.transform.SetParent(null); // 플레이어를 다시 원래 상태로
+            other.transform.SetParent(null);
         }
     }
 }

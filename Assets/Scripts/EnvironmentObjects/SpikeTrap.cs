@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpikeTrap : MonoBehaviour
+public class SpikeTrap : MonoBehaviour, ITrap
 {
+    public bool isActive { get; set; }
     
     public float upHeight = 1.5f;
     public float speed = 5f;
@@ -16,12 +17,18 @@ public class SpikeTrap : MonoBehaviour
     
     private void Start()
     {
+        isActive = true;
         initialPosition = transform.position;
-        PopUp();
+    }
+
+    public void Deactivate()
+    {
+        isActive = false;
     }
     
-        public void PopUp()
+        public void Activate()
         {
+            isActive = true;
             if (!isUp)
             {
                 isUp = true;
