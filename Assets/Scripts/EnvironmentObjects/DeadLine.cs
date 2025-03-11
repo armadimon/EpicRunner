@@ -15,7 +15,6 @@ public class DeadLine : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         Debug.Log(other.gameObject.name);
-        if (other.gameObject.CompareTag("Player"))
         {
             CharacterManager.Instance.Player.condition.TakePhysicalDamage(20);
             CharacterManager.Instance.Player.transform.position = startPosition;

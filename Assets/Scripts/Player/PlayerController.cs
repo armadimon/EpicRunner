@@ -6,7 +6,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")] public float moveSpeed;
+    [Header("Movement")]
+    public float moveSpeed;
+    private float defalutMoveSpeed;
     private Vector2 _curMoveInput;
     public float jumpPower;
     public float dashPower;
@@ -15,7 +17,21 @@ public class PlayerController : MonoBehaviour
     private bool isDashing = false;
     private float dashDuration = 0.2f;
 
+    [Header("Climb")]
+    public float climbSpeed;
+    public float maxClimbTime;
+    public Transform orientation;
+    public float wallDetectionLength;
+    public float sphereCastRadius;
+    public float maxWallLookAngle;
+    public LayerMask wallLayerMask;
 
+    private bool isClimbing;
+    private float climbTimer;
+    private float wallLookAngle;
+    private RaycastHit frontWallHit;
+    private bool wallFront;
+    
     [Header("Look")] public Transform cameraContainer;
     public float minXLook;
     public float maxXLook;
@@ -31,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponentInChildren<Rigidbody>();
+        defalutMoveSpeed = moveSpeed;
     }
 
     private void Start()
@@ -46,6 +63,37 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //------------------------------------------------------
+    // Climb
+
+    private void WallCheck()
+    {
+        wallFront = Physics.SphereCast(transform.position, sphereCastRadius, orientation.forward, out frontWallHit, wallDetectionLength, wallLayerMask);
+        wallLookAngle = Vector3.Angle(orientation.forward, -frontWallHit.normal);
+
+        if (IsGrounded())
+        {
+            climbTimer = maxClimbTime;
+        }
+    }
+    
+    private void StartClimbing()
+    {
+        isClimbing = true;
+    }
+
+    private void climbingMovement()
+    {
+        _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, climbSpeed, _rigidbody.velocity.z );
+    }
+
+    private void StopClimbing()
+    {
+        isClimbing = false;
+        wallFront = false;
+    }
+    
+    //------------------------------------------------------
 
     private void LateUpdate()
     {
@@ -60,9 +108,24 @@ public class PlayerController : MonoBehaviour
         Vector3 dir = transform.forward * _curMoveInput.y + transform.right * _curMoveInput.x;
         dir *= moveSpeed;
         dir.y = _rigidbody.velocity.y;
-
-        _rigidbody.velocity = dir;
-
+        
+        if ((wallFront && _curMoveInput.y > 0) && wallLookAngle < maxWallLookAngle)
+        {
+            if (!isClimbing && climbTimer > 0)
+                StartClimbing();
+            if (isClimbing)
+                climbingMovement();
+            if (climbTimer > 0)
+                climbTimer -= Time.deltaTime;
+            if (climbTimer <= 0)
+                StopClimbing();
+        }
+        else
+        {
+            if (isClimbing)
+                StopClimbing();
+            _rigidbody.velocity = dir;
+        }
     }
 
     void CameraLook()
@@ -93,8 +156,8 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("OnJump");
-        if (context.phase == InputActionPhase.Started && IsGrounded())
+        WallCheck();
+        if (context.phase == InputActionPhase.Started && (IsGrounded() || isClimbing))
         {
             _rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
         }
@@ -206,5 +269,6 @@ public class PlayerController : MonoBehaviour
             _rigidbody.AddForce(knockbackDirection * knockbackForce, ForceMode.Impulse);
         }
     }
+    
 }
 
